@@ -1,3 +1,11 @@
+#if PUSHWOOSH
+
+#if !UNITY_EDITOR || FCLOG
+using Debug = FC.Debug;
+#else
+using Debug = UnityEngine.Debug;
+#endif
+
 using UnityEngine;
 using System;
 using System.Collections;
@@ -9,10 +17,10 @@ public class PushNotificationsAndroid : Pushwoosh
 	// Use this for initialization
 	void Start () {
 		InitPushwoosh();
-		RegisterForPushNotifications();
+		//RegisterForPushNotifications();
 		
-		Debug.Log(this.gameObject.name);
-		Debug.Log(PushToken);
+		//Debug.Log(this.gameObject.name);
+		//Debug.Log("InitPushwoosh: " + PushToken);
 
 		Initialized ();
 	}
@@ -31,7 +39,7 @@ public class PushNotificationsAndroid : Pushwoosh
 		pushwoosh.Call("setListenerName", this.gameObject.name);
 	}
  
-	public void RegisterForPushNotifications()
+	public override void RegisterForPushNotifications()
 	{
 		pushwoosh.Call("registerForPushNotifications");
 	}
@@ -231,3 +239,5 @@ public class PushNotificationsAndroid : Pushwoosh
 	}
 #endif
 }
+
+#endif

@@ -1,3 +1,11 @@
+#if PUSHWOOSH
+
+#if !UNITY_EDITOR || FCLOG
+using Debug = FC.Debug;
+#else
+using Debug = UnityEngine.Debug;
+#endif
+
 using UnityEngine;
 using System.Collections;
 using System.Runtime.InteropServices;
@@ -55,11 +63,16 @@ public class PushNotificationsIOS : Pushwoosh
 
 	// Use this for initialization
 	void Start () {
-		registerForRemoteNotifications();
+		//registerForRemoteNotifications();
 		setListenerName(this.gameObject.name);
-		Debug.Log(PushToken);
+		//Debug.Log("InitPushwoosh: " + PushToken);
 
 		Initialized ();
+	}
+
+	public override void RegisterForPushNotifications()
+	{
+		registerForRemoteNotifications();
 	}
 
 	public override string HWID
@@ -139,3 +152,5 @@ public class PushNotificationsIOS : Pushwoosh
 	}
 #endif
 }
+
+#endif

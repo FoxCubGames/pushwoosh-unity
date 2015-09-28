@@ -1,4 +1,12 @@
-﻿using UnityEngine;
+#if PUSHWOOSH
+
+#if !UNITY_EDITOR || FCLOG
+using Debug = FC.Debug;
+#else
+using Debug = UnityEngine.Debug;
+#endif
+
+using UnityEngine;
 using System.Collections.Generic;
 
 #if UNITY_IPHONE && !UNITY_EDITOR
@@ -52,6 +60,10 @@ public class Pushwoosh : MonoBehaviour
 			UnsupportedPlatform ();
 			return "Unsupported platform"; 
 		}
+	}
+
+	public virtual void RegisterForPushNotifications() {
+		UnsupportedPlatform();
 	}
 
 	public virtual void StartTrackingGeoPushes()
@@ -134,9 +146,11 @@ public class Pushwoosh : MonoBehaviour
 		get
 		{
 			if (applicationIsQuitting) {
+				#if !RELEASE || UNITY_EDITOR
 				Debug.LogWarning("[Singleton] Instance '"+ typeof(PushwooshInstanceType) +
 				                 "' already destroyed on application quit." +
 				                 " Won't create again - returning null.");
+				#endif
 				return null;
 			}
 			
@@ -148,9 +162,11 @@ public class Pushwoosh : MonoBehaviour
 					
 					if ( FindObjectsOfType(typeof(PushwooshInstanceType)).Length > 1 )
 					{
+						#if !RELEASE || UNITY_EDITOR
 						Debug.LogError("[Singleton] Something went really wrong " +
 						               " - there should never be more than 1 singleton!" +
 						               " Reopening the scene might fix it.");
+						#endif
 						return _instance;
 					}
 					
@@ -161,13 +177,17 @@ public class Pushwoosh : MonoBehaviour
 						singleton.name = "(singleton) "+ typeof(PushwooshInstanceType).ToString();
 						
 						DontDestroyOnLoad(singleton);
-						
+
+						#if !RELEASE || UNITY_EDITOR
 						Debug.Log("[Singleton] An instance of " + typeof(PushwooshInstanceType) + 
 						          " is needed in the scene, so '" + singleton +
 						          "' was created with DontDestroyOnLoad.");
+						#endif
 					} else {
+						#if !RELEASE || UNITY_EDITOR
 						Debug.Log("[Singleton] Using instance already created: " +
 						          _instance.gameObject.name);
+						#endif
 					}
 				}
 				
@@ -189,3 +209,5 @@ public class Pushwoosh : MonoBehaviour
 		applicationIsQuitting = true;
 	}
 }
+
+#endif
